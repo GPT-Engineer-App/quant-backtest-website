@@ -1,17 +1,9 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-const fetchBacktestRecords = async () => {
+export const fetchBacktestRecords = async () => {
   // Simulated API call
   return [
     { id: 1, name: "Backtest 1", date: "2023-05-01", profit: 1000 },
@@ -56,11 +48,6 @@ const fetchBacktestDetails = async (id) => {
 const QuantBacktest = () => {
   const [selectedBacktestId, setSelectedBacktestId] = useState(null);
 
-  const { data: backtestRecords, isLoading: isLoadingRecords } = useQuery({
-    queryKey: ["backtestRecords"],
-    queryFn: fetchBacktestRecords,
-  });
-
   const { data: backtestDetails, isLoading: isLoadingDetails } = useQuery({
     queryKey: ["backtestDetails", selectedBacktestId],
     queryFn: () => fetchBacktestDetails(selectedBacktestId),
@@ -68,58 +55,16 @@ const QuantBacktest = () => {
   });
 
   return (
-    <div className="flex h-full">
-      <div className="w-1/3 pr-4 overflow-auto">
-        <Card>
-          <CardHeader>
-            <CardTitle>Backtest Records</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isLoadingRecords ? (
-              <p>Loading records...</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Profit</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {backtestRecords.map((record) => (
-                    <TableRow key={record.id}>
-                      <TableCell>{record.name}</TableCell>
-                      <TableCell>{record.date}</TableCell>
-                      <TableCell>{record.profit}</TableCell>
-                      <TableCell>
-                        <Button
-                          onClick={() => setSelectedBacktestId(record.id)}
-                          variant="outline"
-                        >
-                          View
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-      <div className="w-2/3 pl-4 overflow-auto">
-        {selectedBacktestId ? (
-          isLoadingDetails ? (
-            <p>Loading details...</p>
-          ) : (
-            <BacktestDetails details={backtestDetails} />
-          )
+    <div className="space-y-4">
+      {selectedBacktestId ? (
+        isLoadingDetails ? (
+          <p>Loading details...</p>
         ) : (
-          <p>Select a backtest to view details</p>
-        )}
-      </div>
+          <BacktestDetails details={backtestDetails} />
+        )
+      ) : (
+        <p>Select a backtest from the sidebar to view details</p>
+      )}
     </div>
   );
 };
